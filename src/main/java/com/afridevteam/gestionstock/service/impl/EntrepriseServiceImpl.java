@@ -7,6 +7,7 @@ import com.afridevteam.gestionstock.exception.InvalidEntityException;
 import com.afridevteam.gestionstock.exception.InvalidOperationException;
 import com.afridevteam.gestionstock.repository.EntrepriseRepository;
 import com.afridevteam.gestionstock.service.EntrepriseService;
+import com.afridevteam.gestionstock.utils.MessageUtils;
 import com.afridevteam.gestionstock.validator.EntrepriseValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,10 @@ public class EntrepriseServiceImpl implements EntrepriseService {
         List<String> errors = EntrepriseValidator.validate(dto);
         if (!errors.isEmpty()) {
             log.error("Entreprise is invalid {}", dto);
-            throw new InvalidEntityException("Veuillez corriger les erreurs ", ErrorCodes.CLIENT_NOT_FOUND, errors);
+            throw new InvalidEntityException("Veuillez corriger les erreurs ", ErrorCodes.CLIENT_NOT_VALID, errors);
         }
-        return EntrepriseDto.fromEntity(entrepriseRepository.save(EntrepriseDto.toEntity(dto)));
+        EntrepriseDto saveEntreprise = EntrepriseDto.fromEntity(entrepriseRepository.save(EntrepriseDto.toEntity(dto)));
+        return saveEntreprise;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class EntrepriseServiceImpl implements EntrepriseService {
         }
         return entrepriseRepository.findById(id)
                                    .map(EntrepriseDto::fromEntity)
-                                   .orElseThrow(() -> new EntityNotFoundException("Aucun client  avec l'id=" + id + " n'a ete trouve da la bd ",
+                                   .orElseThrow(() -> new EntityNotFoundException(String.format(MessageUtils.MESSAGE_F, "entreprise", "l'id", id.toString()),
                                                                                   ErrorCodes.ENTREPRISE_NOT_FOUND));
     }
 

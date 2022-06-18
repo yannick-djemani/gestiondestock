@@ -21,6 +21,6 @@ public interface ArticleService extends EntityService<ArticleDto> {
 
     List<ArticleDto> findAllArticleByCategorie(Long idArticle);
 
-    Page<List<ArticleDto>> findAllArticleByCategorie(Long idArticle, Pageable pageable);
+    Page<ArticleDto> findAllArticleByCategorie(Long idArticle, Pageable pageable);
 
 }

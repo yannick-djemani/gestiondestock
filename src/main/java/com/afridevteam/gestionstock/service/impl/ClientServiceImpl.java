@@ -62,6 +62,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void delete(Long id) {
+        //verifier que le client est dans commande client avant de le supprimer
         if (null == id) {
             log.error(" impossible de supprimer le client ");
             throw new InvalidOperationException("impossible de supprimer ce client avec un id null", ErrorCodes.CLIENT_NOT_FOUND);

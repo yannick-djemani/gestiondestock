@@ -9,25 +9,13 @@ import java.util.Optional;
 
 @Service("gestionstock")
 public class UtilisateurServiceImpl implements UtilisateurService {
-    @Override
-    public Optional<UtilisateurDto> save(UtilisateurDto dto) {
-        return Optional.empty();
-    }
 
-    @Override
-    public Optional<UtilisateurDto> findById(Long id) {
-        return Optional.empty();
-    }
 
     @Override
     public Optional<UtilisateurDto> findByEmail(String email) {
         return Optional.empty();
     }
 
-    @Override
-    public List<UtilisateurDto> findAll() {
-        return null;
-    }
 
     @Override
     public Optional<UtilisateurDto> changePassword() {
@@ -37,6 +25,21 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     @Override
     public Optional<UtilisateurDto> currentUser() {
         return Optional.empty();
+    }
+
+    @Override
+    public UtilisateurDto save(UtilisateurDto dto) {
+        return null;
+    }
+
+    @Override
+    public UtilisateurDto findById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<UtilisateurDto> findAll() {
+        return null;
     }
 
     @Override

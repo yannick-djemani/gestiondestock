@@ -27,4 +27,9 @@ public class VenteServiceImpl implements VenteService {
     public void delete(Long id) {
 
     }
+
+    @Override
+    public VenteDto findByCode(String code) {
+        return null;
+    }
 }
