@@ -1,11 +1,13 @@
 package com.afridevteam.gestionstock.service.impl;
 
+import com.afridevteam.gestionstock.domain.CommandeClient;
 import com.afridevteam.gestionstock.dto.ClientDto;
 import com.afridevteam.gestionstock.exception.EntityNotFoundException;
 import com.afridevteam.gestionstock.exception.ErrorCodes;
 import com.afridevteam.gestionstock.exception.InvalidEntityException;
 import com.afridevteam.gestionstock.exception.InvalidOperationException;
 import com.afridevteam.gestionstock.repository.ClientRepository;
+import com.afridevteam.gestionstock.repository.CommandeClientRepository;
 import com.afridevteam.gestionstock.service.ClientService;
 import com.afridevteam.gestionstock.validator.ClientValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +21,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
+    private final CommandeClientRepository commandeClientRepository;
 
-    public ClientServiceImpl(ClientRepository clientRepository) {this.clientRepository = clientRepository;}
+    public ClientServiceImpl(ClientRepository clientRepository, CommandeClientRepository commandeClientRepository) {
+        this.clientRepository = clientRepository;
+        this.commandeClientRepository = commandeClientRepository;
+    }
 
     @Override
     public ClientDto save(ClientDto dto) {
@@ -65,7 +71,11 @@ public class ClientServiceImpl implements ClientService {
         //verifier que le client est dans commande client avant de le supprimer
         if (null == id) {
             log.error(" impossible de supprimer le client ");
-            throw new InvalidOperationException("impossible de supprimer ce client avec un id null", ErrorCodes.CLIENT_NOT_FOUND);
+            return;
+        }
+        List<CommandeClient> commandeClients = commandeClientRepository.findAllByClientId(id);
+        if (!commandeClients.isEmpty()) {
+            throw new InvalidOperationException("impossible de supprimer ce client qui existe deja ", ErrorCodes.CLIENT_ALREADY_IN_USE);
         }
         clientRepository.deleteById(id);
     }
