@@ -13,7 +13,7 @@ public class UtilisateurValidator {
             errors.add("Veuillez renseigner le nom de l'utilisateur ");
             errors.add("Veuillez renseigner le prenom de l'utilisateur ");
             errors.add("Veuillez renseigner le email de l'utilisateur ");
-            errors.add("Veuillez renseigner le email de l'utilisateur ");
+            errors.add("Veuillez renseigner le mot de  l'utilisateur ");
             errors.add("Veuillez renseigner le email de l'utilisateur ");
             errors.add("Veuillez renseigner la photo photo ");
             errors.add("Veuillez renseigner le role de l'utilisateur ");
@@ -37,6 +37,38 @@ public class UtilisateurValidator {
         if (!StringUtils.hasText(utilisateurDto.getPhoto())) {
             errors.add("Veuillez renseigner la photo du client ");
         }
+        return errors;
+    }
+
+    public static List<String> validate2(UtilisateurDto utilisateurDto) {
+        List<String> errors = new ArrayList<>();
+
+        if (utilisateurDto == null) {
+            errors.add("Veuillez renseigner le nom d'utilisateur");
+            errors.add("Veuillez renseigner le prenom d'utilisateur");
+            errors.add("Veuillez renseigner le mot de passe d'utilisateur");
+            errors.add("Veuillez renseigner l'adresse d'utilisateur");
+            errors.addAll(AdresseValidator.validate(null));
+            return errors;
+        }
+
+        if (!StringUtils.hasLength(utilisateurDto.getNom())) {
+            errors.add("Veuillez renseigner le nom d'utilisateur");
+        }
+        if (!StringUtils.hasLength(utilisateurDto.getPrenom())) {
+            errors.add("Veuillez renseigner le prenom d'utilisateur");
+        }
+        if (!StringUtils.hasLength(utilisateurDto.getEmail())) {
+            errors.add("Veuillez renseigner l'email d'utilisateur");
+        }
+        if (!StringUtils.hasLength(utilisateurDto.getMotDePasse())) {
+            errors.add("Veuillez renseigner le mot de passe d'utilisateur");
+        }
+        if (utilisateurDto.getDateNaissance() == null) {
+            errors.add("Veuillez renseigner la date de naissance d'utilisateur");
+        }
+        errors.addAll(AdresseValidator.validate(utilisateurDto.getAdresse()));
+
         return errors;
     }
 }

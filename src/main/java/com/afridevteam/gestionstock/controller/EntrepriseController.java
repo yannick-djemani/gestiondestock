@@ -3,13 +3,17 @@ package com.afridevteam.gestionstock.controller;
 import com.afridevteam.gestionstock.controller.api.EntrepriseApi;
 import com.afridevteam.gestionstock.dto.EntrepriseDto;
 import com.afridevteam.gestionstock.service.EntrepriseService;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RestController
 public class EntrepriseController implements EntrepriseApi {
     private final EntrepriseService entrepriseService;
 
-    public EntrepriseController(EntrepriseService entrepriseService) {this.entrepriseService = entrepriseService;}
+    public EntrepriseController(EntrepriseService entrepriseService) {
+        this.entrepriseService = entrepriseService;
+    }
 
     @Override
     public EntrepriseDto save(EntrepriseDto dto) {

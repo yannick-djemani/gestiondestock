@@ -37,19 +37,20 @@ public class EntrepriseServiceImpl implements EntrepriseService {
     }
 
     @Override
+    @Transactional(rollbackOn = InvalidEntityException.class)
     public EntrepriseDto save(EntrepriseDto dto) {
         List<String> errors = EntrepriseValidator.validate(dto);
         if (!errors.isEmpty()) {
             log.error("Entreprise is invalid {}", dto);
-            throw new InvalidEntityException("Veuillez corriger les erreurs ", ErrorCodes.CLIENT_NOT_VALID, errors);
+            throw new InvalidEntityException("Veuillez corriger les erreurs ", ErrorCodes.ENTREPRISE_NOT_FOUND, errors);
         }
         EntrepriseDto saveEntreprise = EntrepriseDto.fromEntity(entrepriseRepository.save(EntrepriseDto.toEntity(dto)));
         UtilisateurDto utilisateurDto = fromEntreprise(saveEntreprise);
         UtilisateurDto saveUser = utilisateurService.save(utilisateurDto);
         RolesDto rolesDto = RolesDto.builder()
-                                    .roleName("ADMIN")
-                                    .utilisateur(saveUser)
-                                    .build();
+                .roleName("ADMIN")
+                .utilisateur(saveUser)
+                .build();
         rolesRepository.save(RolesDto.toEntity(rolesDto));
 
         return saveEntreprise;
@@ -62,9 +63,9 @@ public class EntrepriseServiceImpl implements EntrepriseService {
             return null;
         }
         return entrepriseRepository.findById(id)
-                                   .map(EntrepriseDto::fromEntity)
-                                   .orElseThrow(() -> new EntityNotFoundException(String.format(MessageUtils.MESSAGE_F, "entreprise", "l'id", id.toString()),
-                                                                                  ErrorCodes.ENTREPRISE_NOT_FOUND));
+                .map(EntrepriseDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(MessageUtils.MESSAGE_F, "entreprise", "l'id", id.toString()),
+                        ErrorCodes.ENTREPRISE_NOT_FOUND));
     }
 
     @Override
@@ -73,8 +74,8 @@ public class EntrepriseServiceImpl implements EntrepriseService {
             log.error("Client name  est null");
         }
         return entrepriseRepository.findByNom(name).map(EntrepriseDto::fromEntity)
-                                   .orElseThrow(() -> new EntityNotFoundException("Aucun client  avec le nom=" + name + " n'a ete trouve da la bd ",
-                                                                                  ErrorCodes.CLIENT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException("Aucun client  avec le nom=" + name + " n'a ete trouve da la bd ",
+                        ErrorCodes.CLIENT_NOT_FOUND));
     }
 
     @Override
@@ -93,17 +94,18 @@ public class EntrepriseServiceImpl implements EntrepriseService {
 
     private UtilisateurDto fromEntreprise(EntrepriseDto saveEntreprise) {
         return UtilisateurDto.builder()
-                             .adresse(saveEntreprise.getAdresse())
-                             .nom(saveEntreprise.getNom())
-                             .prenom(saveEntreprise.getCodeFiscal())
-                             .motDePasse(generateRandomPassword())
-                             .entreprise(saveEntreprise)
-                             .dateNaissance(Instant.now())
-                             .photo(saveEntreprise.getPhoto())
-                             .build();
+                .adresse(saveEntreprise.getAdresse())
+                .nom(saveEntreprise.getNom())
+                .prenom(saveEntreprise.getCodeFiscal())
+                .motDePasse(generateRandomPassword())
+                .entreprise(saveEntreprise)
+                .dateNaissance(Instant.now())
+                .email(saveEntreprise.getEmail())
+                .photo(saveEntreprise.getPhoto())
+                .build();
     }
 
     private String generateRandomPassword() {
-        return "@admin";
+        return "@dmin";
     }
 }

@@ -1,18 +1,8 @@
 package com.afridevteam.gestionstock.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -28,8 +18,12 @@ public class Fournisseur extends AbstractEntity {
     private Long id;
     @Column(name = "nom")
     private String nom;
+    
     @Column(name = "prenom")
     private String prenom;
+
+    @Column(name = "code")
+    private String code;
     @Embedded
     private Adresse adresse;
     @Column(name = "photo")

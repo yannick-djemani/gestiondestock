@@ -1,4 +1,7 @@
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/getstiondestock?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
@@ -14,4 +17,11 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
 server:
-  port: 8085
+  port: 8082
+
+flickr:
+  apikey: a5e6f094691a3d8f1186abc227724521
+  apisecret: 1299541411e93c08
+  appKey: 72157720848401097-dc42109717afc726
+  appSecret: b75157816e5aae17
+

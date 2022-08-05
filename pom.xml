@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -15,6 +15,13 @@
     <description>projet de gestion de stock</description>
     <properties>
         <java.version>11</java.version>
+        <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
+        <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
+        <jacoco.utReportFolder>${project.build.directory}/jacoco/test</jacoco.utReportFolder>
+        <jacoco.utReportFile>${jacoco.utReportFolder}/test.exec</jacoco.utReportFile>
+        <jacoco.itReportFolder>${project.build.directory}/jacoco/integrationTest</jacoco.itReportFolder>
+        <jacoco.itReportFile>${jacoco.itReportFolder}/integrationTest.exec</jacoco.itReportFile>
     </properties>
     <dependencies>
         <dependency>
@@ -51,16 +58,114 @@
             <artifactId>mapstruct</artifactId>
             <version>1.5.1.Final</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.flickr4java</groupId>
+            <artifactId>flickr4java</artifactId>
+            <version>3.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>${properties-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>sonar-project.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-tests</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <destFile>${jacoco.utReportFile}</destFile>
+                        </configuration>
+                    </execution>
+                    <!-- Ensures that the code coverage report for unit tests is created after unit tests have been run -->
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${jacoco.utReportFile}</dataFile>
+                            <outputDirectory>${jacoco.utReportFolder}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-integration-tests</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <destFile>${jacoco.itReportFile}</destFile>
+                        </configuration>
+                    </execution>
+                    <!-- Ensures that the code coverage report for integration tests is created after integration tests have been run -->
+                    <execution>
+                        <id>post-integration-tests</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report-integration</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${jacoco.itReportFile}</dataFile>
+                            <outputDirectory>${jacoco.itReportFolder}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -73,32 +178,31 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>1.5.1.Final</version>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.24</version>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version>0.2.0</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <source>1.8</source>-->
+            <!--                    <target>1.8</target>-->
+            <!--                    <annotationProcessorPaths>-->
+            <!--                        <path>-->
+            <!--                            <groupId>org.mapstruct</groupId>-->
+            <!--                            <artifactId>mapstruct-processor</artifactId>-->
+            <!--                            <version>1.5.1.Final</version>-->
+            <!--                        </path>-->
+            <!--                        <path>-->
+            <!--                            <groupId>org.projectlombok</groupId>-->
+            <!--                            <artifactId>lombok</artifactId>-->
+            <!--                            <version>1.18.24</version>-->
+            <!--                        </path>-->
+            <!--                        <path>-->
+            <!--                            <groupId>org.projectlombok</groupId>-->
+            <!--                            <artifactId>lombok-mapstruct-binding</artifactId>-->
+            <!--                            <version>0.2.0</version>-->
+            <!--                        </path>-->
+            <!--                    </annotationProcessorPaths>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 

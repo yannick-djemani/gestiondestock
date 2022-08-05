@@ -1,4 +1,4 @@
-package com.afridevteam.gestionstock.service;
+package com.afridevteam.gestionstock.controller.api;
 
 import com.afridevteam.gestionstock.domain.enumeration.EtatCommande;
 import com.afridevteam.gestionstock.dto.CommandeFournisseurDto;
@@ -7,7 +7,20 @@ import com.afridevteam.gestionstock.dto.LigneCommandeFournisseurDto;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface CommandeFournisseurService extends EntityService<CommandeFournisseurDto> {
+public interface CommandeFournisseurApi {
+    CommandeFournisseurDto findById(Long id);
+
+
+    CommandeFournisseurDto save(CommandeFournisseurDto dto);
+
+
+    CommandeFournisseurDto findByNom(String name);
+
+
+    List<CommandeFournisseurDto> findAll();
+
+    void delete(Long id);
+
     CommandeFournisseurDto updateEtatCommande(Long idCommande, EtatCommande etatCommande);
 
     CommandeFournisseurDto updateQuantiteCommande(Long idCommande, BigDecimal quantite, Long idLigneCommande);
